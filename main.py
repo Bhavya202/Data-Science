@@ -1,5 +1,6 @@
 # Importing Modules
 import csv
+import pandas as pd
 import plotly.express as px
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
@@ -30,11 +31,6 @@ planet_gravity = []
 for index, name in enumerate(planet_name):
     gravity = (float(planet_mass[index])*1.989e+30) / (float(planet_radius[index])*float(planet_radius[index])*6.957e+8*6.957e+8) * 6.674e-11
     planet_gravity.append(gravity)
-
-# Sorting All The Lists
-planet_mass.sort()
-planet_radius.sort()
-planet_gravity.sort()
 
 # Plotting A Bar Graph With Planet Names And Their Gravity
 fig = px.scatter(x=planet_name, y=planet_gravity)
@@ -96,3 +92,31 @@ plt.title('The Elbow Method')
 plt.xlabel('Number of clusters')
 plt.ylabel('WCSS')
 plt.show()
+
+# Taking Out The Distance From The Data
+distance = []
+for planet_data in planet_data_rows:
+    distance.append(planet_data[2])
+
+# Rounding Off The Data As It Has Decimal Values
+round = [int(round(float(i))) for i in distance]
+
+# Making A New List Of Distance
+new_distance = []
+for data in round:
+    if data <= 100:
+        new_distance.append(data)
+
+# Making A New List of Planet Gravity
+new_gravity = list(planet_gravity)
+for planet_data in planet_gravity:
+  if planet_data > 350 or planet_data < 50:
+    new_gravity.remove(planet_data)
+
+# Printing Number Of New Planet Distanc And Gravity
+print(len(new_distance))
+print(len(new_gravity))
+
+# Creating A New CSV File
+df2 = pd.DataFrame(list(zip(planet_name, distance, planet_mass, planet_radius, planet_gravity)), columns=['Name','Distance','Mass','Radius', 'Gravity'])
+df2.to_csv('data.csv')
